@@ -1,0 +1,4 @@
+CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
+
+ALTER TABLE "Ticket"
+ADD COLUMN "textEmbedding" vector(3072);
