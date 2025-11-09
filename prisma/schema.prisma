@@ -36,6 +36,7 @@ model Ticket {
   title       String
   description String
   status      TicketStatus @default(OPEN)
+  textEmbedding  Unsupported("vector")?
 
   // TS for the original help message (top of the help thread)
   msgTs    String @unique
