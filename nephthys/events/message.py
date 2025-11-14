@@ -83,8 +83,8 @@ async def send_ticket_message(
     event: Dict[str, Any],
     client: AsyncWebClient,
     past_tickets: int,
-    display_name: str,
-    profile_pic: str,
+    display_name: str | None,
+    profile_pic: str | None,
 ):
     """Send a "backend" message to the tickets channel with ticket details."""
     user = event.get("user", "unknown")
@@ -145,7 +145,7 @@ async def handle_new_question(
     )
     user_info = user_info_response.get("user")
     if user_info:
-        profile_pic: str = user_info["profile"].get("image_512", "")
+        profile_pic: str | None = user_info["profile"].get("image_512", "")
         display_name: str = (
             user_info["profile"]["display_name"] or user_info["real_name"]
         )
