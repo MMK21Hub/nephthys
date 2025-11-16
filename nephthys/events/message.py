@@ -216,6 +216,7 @@ async def handle_new_question(
                 "description": text,
                 "msgTs": event["ts"],
                 "ticketTs": ticket_message_ts,
+                "faqMsgTs": user_facing_message_ts,
                 "openedBy": {"connect": {"id": db_user.id}},
                 "userFacingMsgs": {
                     "create": {

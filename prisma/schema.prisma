@@ -41,6 +41,8 @@ model Ticket {
   msgTs    String @unique
   // TS for the ticket message in the "backend" tickets channel
   ticketTs String @unique
+  // TS for the initial "hey, check the FAQ!" message sent by the bot in the help thread
+  faqMsgTs String?
 
   // Messages sent by the bot in the help thread
   userFacingMsgs BotMessage[]
