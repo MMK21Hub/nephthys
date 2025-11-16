@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 from slack_sdk.web.async_client import AsyncWebClient
@@ -9,6 +10,47 @@ from nephthys.utils.permissions import can_resolve
 from nephthys.utils.ticket_methods import delete_message
 from nephthys.utils.ticket_methods import reply_to_ticket
 from prisma.enums import TicketStatus
+from prisma.models import Ticket
+
+
+async def update_user_facing_message(ticket: Ticket):
+    ts = ticket.faqMsgTs
+    channel = env.slack_help_channel
+    if not ts:
+        logging.warning(f"FAQ message is not stored for resolved ticket {ticket.msgTs}")
+        return
+
+    faq_msg_matches = (
+        await env.slack_client.conversations_history(
+            channel=channel,
+            latest=ts,
+            inclusive=True,
+            limit=1,
+        )
+    )["messages"]
+    if not faq_msg_matches:
+        logging.warning(
+            f"Could not find FAQ message {ts} for resolved ticket (parent msg {ticket.msgTs})"
+        )
+        return
+
+    faq_message = faq_msg_matches[0]
+    for i, block in enumerate(faq_message["blocks"]):
+        if block["type"] != "actions":
+            continue
+        for j, element in enumerate(block["elements"]):
+            if element["type"] == "button" and element["action_id"] == "mark_resolved":
+                faq_message["blocks"][i]["elements"][j]["text"]["text"] = (
+                    "Marked as resolved"
+                )
+                faq_message["blocks"][i]["elements"][j]["style"] = "default"
+
+    await env.slack_client.chat_update(
+        channel=channel,
+        ts=ts,
+        blocks=faq_message["blocks"],
+        text=faq_message["text"],
+    )
 
 
 async def resolve(
@@ -84,6 +126,8 @@ async def resolve(
         name="thinking_face",
         timestamp=ts,
     )
+
+    await update_user_facing_message(tkt)
 
     if await env.workspace_admin_available():
         await add_thread_to_delete_queue(
