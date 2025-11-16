@@ -49,7 +49,6 @@ async def update_user_facing_message(ticket: Ticket):
         channel=channel,
         ts=ts,
         blocks=faq_message["blocks"],
-        text=faq_message["text"],
     )
 
 
