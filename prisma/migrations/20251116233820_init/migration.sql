@@ -1,9 +1,6 @@
 -- CreateEnum
 CREATE TYPE "TicketStatus" AS ENUM ('OPEN', 'IN_PROGRESS', 'CLOSED');
 
--- CreateEnum
-CREATE TYPE "UserType" AS ENUM ('AUTHOR', 'HELPER', 'OTHER');
-
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,

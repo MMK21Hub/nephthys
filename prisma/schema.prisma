@@ -15,6 +15,12 @@ enum TicketStatus {
   CLOSED
 }
 
+enum UserType {
+  AUTHOR
+  HELPER
+  OTHER
+}
+
 model User {
   id       Int     @id @unique @default(autoincrement())
   slackId  String  @unique
@@ -44,6 +50,9 @@ model Ticket {
 
   // Messages sent by the bot in the help thread
   userFacingMsgs BotMessage[]
+
+  // lastMsgAt DateTime
+  // lastMsgBy UserType @default(AUTHOR)
 
   openedBy   User   @relation("OpenedTickets", fields: [openedById], references: [id])
   openedById Int
