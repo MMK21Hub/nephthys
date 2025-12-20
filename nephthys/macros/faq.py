@@ -1,30 +1,5 @@
-import logging
-
-from nephthys.actions.resolve import resolve
 from nephthys.macros.types import Macro
 from nephthys.utils.env import env
-from nephthys.utils.slack_user import get_user_profile
-from nephthys.utils.ticket_methods import reply_to_ticket
-
-
-async def send_plain_faq_link_and_close(ticket, helper):
-    author = await env.db.user.find_unique(where={"id": ticket.openedById})
-    if not author:
-        # TODO: ??
-        logging.error(f"Failed to find ticket author in database: {ticket.openedById}")
-        return
-    user = await get_user_profile(author.slackId)
-    await reply_to_ticket(
-        text=env.transcript.faq_macro.replace("(user)", user.display_name()),
-        ticket=ticket,
-        client=env.slack_client,
-    )
-    await resolve(
-        ts=ticket.msgTs,
-        resolver=helper.slackId,
-        client=env.slack_client,
-        send_resolved_message=False,
-    )
 
 
 class FAQ(Macro):
@@ -93,7 +68,8 @@ class FAQ(Macro):
                                 "text": "Send FAQ answer",
                             },
                             "style": "primary",
-                            "value": "send_faq_answer",
+                            "action_id": "send_faq_answer",
+                            "value": f"{ticket.id}",
                         },
                         {
                             "type": "button",
@@ -101,7 +77,8 @@ class FAQ(Macro):
                                 "type": "plain_text",
                                 "text": "Send normal FAQ link",
                             },
-                            "value": "send_faq_link",
+                            "action_id": "send_faq_link",
+                            "value": f"{ticket.id}",
                         },
                     ],
                 },
