@@ -14,6 +14,7 @@ from nephthys.tasks.daily_stats import send_daily_stats
 from nephthys.tasks.update_helpers import update_helpers
 from nephthys.utils.delete_thread import process_queue
 from nephthys.utils.env import env
+from nephthys.utils.faq_canvas import get_faq_questions
 from nephthys.utils.logging import parse_level_name
 from nephthys.utils.logging import send_heartbeat
 from nephthys.utils.logging import setup_otel_logging
@@ -71,6 +72,7 @@ async def main(_app: Starlette):
             handler = AsyncSocketModeHandler(slack_app, env.slack_app_token)
             logging.info("Starting Socket Mode handler")
             await handler.connect_async()
+            await get_faq_questions("F09NKF58FL5")
 
         logging.info(f"Starting Uvicorn on port {env.port}")
 

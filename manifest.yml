@@ -47,7 +47,8 @@
                 "usergroups:write",
                 "users:read",
                 "users:read.email",
-                "files:write"
+                "files:write",
+                "canvases:read",
             ]
         }
     },
