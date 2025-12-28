@@ -14,7 +14,9 @@ async def get_question_tags(payload: dict) -> list[dict[str, dict[str, str] | st
     keyword = payload.get("value")
     if keyword:
         tag_names = [tag.label for tag in tags]
-        scores = process.extract(keyword, tag_names, scorer=fuzz.ratio, limit=100)
+        scores = process.extract(
+            keyword, tag_names, scorer=fuzz.partial_ratio, limit=100
+        )
         matching_tags = [tags[tag_names.index(score[0])] for score in scores]
     else:
         matching_tags = tags
