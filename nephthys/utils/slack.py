@@ -122,7 +122,7 @@ async def create_question_tag_view(
     await create_question_tag_view_callback(ack, body, client)
 
 
-@app.action("tag-subscribe")
+@app.action("team-tag-subscribe")
 async def tag_subscribe(ack: AsyncAck, body: Dict[str, Any], client: AsyncWebClient):
     await tag_subscribe_callback(ack, body, client)
 

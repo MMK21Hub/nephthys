@@ -52,7 +52,7 @@ async def get_team_tags_view(user: User | None) -> dict:
                             "text": f":rac_cute: {'subscribe' if user.id not in subs else 'unsubscribe'}",
                             "emoji": True,
                         },
-                        "action_id": "tag-subscribe",
+                        "action_id": "team-tag-subscribe",
                         "value": f"{tag.id};{tag.name}",
                         "style": "primary" if user.id not in subs else "danger",
                     }
