@@ -28,5 +28,5 @@ async def get_question_tags(payload: dict) -> list[dict[str, dict[str, str] | st
         }
         for tag in matching_tags
     ]
-    logging.debug(res)
+    logging.debug(f"Matching tag options: {res}")
     return res
