@@ -41,8 +41,7 @@ def get_tickets_count_text(tag: QuestionTag) -> str:
 
 async def get_question_tags_view(user: User | None) -> dict:
     header = get_header_components(user, "question-tags")
-    # is_admin = bool(user and user.admin)
-    # is_helper = bool(user and user.helper)
+    is_helper = bool(user and user.helper)
     tags = await env.db.questiontag.find_many(include={"tickets": True})
 
     view = Home()
@@ -52,16 +51,21 @@ async def get_question_tags_view(user: User | None) -> dict:
         view.add_block(Header(":rac_info: Manage Question Tags"))
         .add_block(
             Section(
-                "question tags let us label and track recurring questions and issues"
+                "question tags let us label and track recurring questions and issues!"
             )
         )
         .add_block(Section(" "))
     )
     for tag in sorted(tags, key=lambda t: len(t.tickets or []), reverse=True):
+        button = (
+            Button("Edit", action_id="edit-question-tag", value=str(tag.id))
+            if is_helper
+            else None
+        )
         section = Section(
-            f"*{tag.label}*\n"  # s
+            f"*{tag.label}*\n"  #
             f"{get_tickets_count_text(tag)}"
-        ).accessory(Button("Edit"))
+        ).accessory(button)
         view.add_block(Divider())
         view.add_block(section)
 

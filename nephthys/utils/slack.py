@@ -12,8 +12,10 @@ from nephthys.actions.create_question_tag import create_question_tag_btn_callbac
 from nephthys.actions.create_question_tag import create_question_tag_view_callback
 from nephthys.actions.create_team_tag import create_team_tag_btn_callback
 from nephthys.actions.create_team_tag import create_team_tag_view_callback
+from nephthys.actions.edit_question_tag import edit_question_tag_open_modal
+from nephthys.actions.edit_question_tag import edit_question_tag_submit
 from nephthys.actions.resolve import resolve
-from nephthys.actions.tag_subscribe import tag_subscribe_callback
+from nephthys.actions.team_tag_subscribe import tag_subscribe_callback
 from nephthys.commands.dm_magic_link import dm_magic_link_cmd_callback
 from nephthys.events.app_home_opened import on_app_home_opened
 from nephthys.events.app_home_opened import open_app_home
@@ -138,6 +140,21 @@ async def assign_question_tag(
     ack: AsyncAck, body: Dict[str, Any], client: AsyncWebClient
 ):
     await assign_question_tag_callback(ack, body, client)
+
+
+@app.action("edit-question-tag")
+async def edit_question_tag(
+    ack: AsyncAck, body: Dict[str, Any], client: AsyncWebClient
+):
+    await ack()
+    await edit_question_tag_open_modal(ack, body, client)
+
+
+@app.view("edit-question-tag")
+async def edit_question_tag_view(
+    ack: AsyncAck, body: Dict[str, Any], client: AsyncWebClient
+):
+    await edit_question_tag_submit(ack, body, client)
 
 
 @app.command("/dm-magic-link")
