@@ -13,6 +13,7 @@ from nephthys.views.home.assigned import get_assigned_tickets_view
 from nephthys.views.home.error import get_error_view
 from nephthys.views.home.helper import get_helper_view
 from nephthys.views.home.loading import get_loading_view
+from nephthys.views.home.question_tags import get_question_tags_view
 from nephthys.views.home.stats import get_stats_view
 from nephthys.views.home.team_tags import get_team_tags_view
 
@@ -54,6 +55,8 @@ async def open_app_home(home_type: str, client: AsyncWebClient, user_id: str):
                     view = await get_helper_view(slack_user=user_id, db_user=user)
                 case "assigned-tickets":
                     view = await get_assigned_tickets_view(user)
+                case "question-tags":
+                    view = await get_question_tags_view(user)
                 case "team-tags":
                     view = await get_team_tags_view(user)
                 case "my-stats":
