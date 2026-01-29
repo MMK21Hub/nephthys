@@ -12,6 +12,7 @@ from starlette.applications import Starlette
 from nephthys.tasks.close_stale import close_stale_tickets
 from nephthys.tasks.daily_stats import send_daily_stats
 from nephthys.tasks.update_helpers import update_helpers
+from nephthys.tasks.update_metrics import update_metrics
 from nephthys.utils.delete_thread import process_queue
 from nephthys.utils.env import env
 from nephthys.utils.logging import parse_level_name
@@ -50,6 +51,13 @@ async def main(_app: Starlette):
             close_stale_tickets,
             "interval",
             hours=1,
+            max_instances=1,
+            next_run_time=datetime.now(),
+        )
+        scheduler.add_job(
+            update_metrics,
+            "interval",
+            seconds=10,
             max_instances=1,
             next_run_time=datetime.now(),
         )
