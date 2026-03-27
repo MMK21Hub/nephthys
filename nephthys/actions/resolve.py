@@ -74,9 +74,11 @@ async def resolve(
         await reply_to_ticket(
             ticket=tkt,
             client=client,
-            text=env.transcript.ticket_resolve.format(user_id=resolver)
-            if not stale
-            else env.transcript.ticket_resolve_stale.format(user_id=resolver),
+            text=(
+                env.transcript.ticket_resolve.render(user=resolving_user)
+                if not stale
+                else env.transcript.ticket_resolve_stale.render(user=resolving_user)
+            ),
         )
     if add_reaction:
         await client.reactions_add(

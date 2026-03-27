@@ -50,7 +50,8 @@ async def handle_message_sent_to_channel(event: Dict[str, Any], client: AsyncWeb
     await client.chat_postEphemeral(
         channel=event["channel"],
         user=event["user"],
-        text=env.transcript.thread_broadcast_delete,
+        # TODO a better way to do this
+        text=env.transcript.thread_broadcast_delete.render(user=f"<@{event['user']}>"),
         thread_ts=event["thread_ts"] if "thread_ts" in event else event["ts"],
     )
 
@@ -167,9 +168,9 @@ async def handle_new_question(
         return
 
     user_facing_message_text = (
-        env.transcript.first_ticket_create.replace("(user)", author.display_name())
+        env.transcript.first_ticket_create.render(user=author)
         if past_tickets == 0
-        else env.transcript.ticket_create.replace("(user)", author.display_name())
+        else env.transcript.ticket_create.render(user=author)
     )
     ticket_url = f"https://hackclub.slack.com/archives/{env.slack_ticket_channel}/p{ticket_message_ts.replace('.', '')}"
 
