@@ -33,10 +33,6 @@ class Transcript(BaseModel):
         default="",
         description="Slack channel ID for team discussions and stats",
     )
-    ticket_reopen: str = Field(
-        default="",
-        description="Message when ticket is reopened",
-    )
 
     @property
     def program_snake_case(self) -> str:
@@ -56,11 +52,20 @@ class Transcript(BaseModel):
         default="C092833JXKK", description="Identity help channel ID"
     )
 
-    first_ticket_create: str = Field(
-        default="", description="Message for first-time ticket creators"
+    first_ticket_create: Template = Field(
+        default=template(
+            "oh, hey {{user}} it looks like this is your first time here, welcome! someone should be along to help you soon but in the mean time i suggest you read the faq <{{self.faq_link}}|here>, it answers a lot of common questions."
+            "\nif your question has been answered, please hit the button below to mark it as resolved"
+        ),
+        description="Message for first-time ticket creators",
     )
 
-    ticket_create: str = Field(default="", description="Message for ticket creation")
+    ticket_create: Template = Field(
+        default=template(
+            "someone should be along to help you soon but in the mean time i suggest you read the faq <{{self.faq_link}}|here> to make sure your question hasn't already been answered. if it has been, please hit the button below to mark it as resolved :D"
+        ),
+        description="Message for ticket creation",
+    )
 
     resolve_ticket_button: str = Field(
         default="Mark as resolved",
@@ -80,6 +85,13 @@ class Transcript(BaseModel):
             ":rac_nooo: it looks like this post is a bit old! if you still need help, please make a new post in <#{{self.help_channel}}> and someone'll be happy to help you out! ^~^"
         ),
         description="Message when ticket is resolved due to being stale",
+    )
+
+    ticket_reopen: Template = Field(
+        default=template(
+            "hey hey! it looks like <@{{user.slack_id}}> has reopened this post! someone'll be with you shortly, ty!"
+        ),
+        description="Message when ticket is reopened",
     )
 
     thread_broadcast_delete: Template = Field(
@@ -155,22 +167,10 @@ class Transcript(BaseModel):
     @model_validator(mode="after")
     def set_default_messages(self):
         """Set default values for messages that reference other fields"""
-        if not self.first_ticket_create:
-            self.first_ticket_create = f"""oh, hey (user) it looks like this is your first time here, welcome! someone should be along to help you soon but in the mean time i suggest you read the faq <{self.faq_link}|here>, it answers a lot of common questions.
-if your question has been answered, please hit the button below to mark it as resolved
-    """
-
-        if not self.ticket_create:
-            self.ticket_create = f"""someone should be along to help you soon but in the mean time i suggest you read the faq <{self.faq_link}|here> to make sure your question hasn't already been answered. if it has been, please hit the button below to mark it as resolved :D
-    """
-
         if not self.dm_magic_link_error:
             self.dm_magic_link_error = f":rac_nooo: something went wrong while generating the magic link, please bug <@{self.program_owner}> (status: {{status}})"
 
         if not self.dm_magic_link_no_permission:
             self.dm_magic_link_no_permission = f":rac_nooo: you don't have permission to use this command, please bug <@{self.program_owner}> if you think this is a mistake"
-
-        if not self.ticket_reopen:
-            self.ticket_reopen = "hey hey! it looks like <@{helper_slack_id}> has reopened this post! someone'll be with you shortly, ty!"
 
         return self
