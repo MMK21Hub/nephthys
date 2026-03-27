@@ -13,6 +13,7 @@ class Transcript(BaseModel):
         """Configuration for the Pydantic model."""
 
         extra = "forbid"
+        arbitrary_types_allowed = True
 
     program_name: str = Field(
         default="Summer of Making", description="Name of the program"
@@ -140,7 +141,21 @@ class Transcript(BaseModel):
         description="Message for unauthorized channel access",
     )
 
+    def __getattr__(self, name):
+        attribute = super().__getattribute__(name)
+        if isinstance(attribute, Template):
+            from nephthys.utils.env import env
+
+            template: Template = attribute
+            # provides access to other transcript fields within templates
+            template.globals["self"] = self
+            # provides access to a subset of the Nephthys config
+            template.globals["env"] = {"app_title": env.app_title}
+
+        return attribute
+
     # this stuff is only required for summer of making, but it's easier to keep it here :p
+    # (the magic link functionality will be removed soon)
     dm_magic_link_no_user: str = Field(
         default=":rac_cute: heya, please provide the user you want me to dm",
         description="Message when no user provided for magic link DM",
