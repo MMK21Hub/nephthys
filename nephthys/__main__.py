@@ -14,6 +14,7 @@ from starlette.applications import Starlette
 from nephthys.tasks.close_stale import close_stale_tickets
 from nephthys.tasks.daily_stats import send_daily_stats
 from nephthys.tasks.fulfillment_reminder import send_fulfillment_reminder
+from nephthys.tasks.update_channel_topic import update_channel_topic
 from nephthys.tasks.update_helpers import update_helpers
 from nephthys.utils.delete_thread import process_queue
 from nephthys.utils.env import env
@@ -75,6 +76,16 @@ async def main(_app: Starlette):
             )
         else:
             logging.debug("Stale ticket closing has not been configured")
+
+        if env.transcript.bts_channel_topic:
+            scheduler.add_job(
+                update_channel_topic,
+                "interval",
+                minutes=1,
+                max_instances=1,
+                next_run_time=datetime.now(),
+            )
+
         scheduler.start()
 
         delete_msg_task = asyncio.create_task(process_queue())

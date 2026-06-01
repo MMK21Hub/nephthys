@@ -32,6 +32,10 @@ This thread has been marked as resolved by <@{{user_id}}>!
 More questions? Send another message in <#{help_channel}> and we'll be there to help too!
 """
 
+    bts_channel_topic: str | None = (
+        f""":star2::dance::ring_buoy:! *(open_tickets)* open • *(in_progress_tickets)* in progress • <#{help_channel}> • <@S0B5RNCC9N1> • <@U0B6K0Q00QZ>"""
+    )
+
     faq_macro: str = f"""
 Hi (user), this question is already answered in our FAQ!
 

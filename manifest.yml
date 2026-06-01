@@ -23,6 +23,8 @@
           "bot": [
                 "channels:history",
                 "channels:read",
+                "channels:manage",
+                "channels:write.topic",
                 "chat:write",
                 "chat:write.customize",
                 "chat:write.public",

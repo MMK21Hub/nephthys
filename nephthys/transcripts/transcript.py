@@ -79,6 +79,11 @@ class Transcript(BaseModel):
 
     ticket_feedback_text: str = Field(default="Feedback really helps us! Thanks <3")
 
+    bts_channel_topic: str | None = Field(
+        default=None,
+        description="If set, the bot will set this as the BTS channel's topic. Available params: (open_tickets), (in_progress_tickets), (unresolved_tickets)",
+    )
+
     ## MACROS ##
 
     faq_macro: str = Field(
